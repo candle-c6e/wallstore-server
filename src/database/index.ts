@@ -4,8 +4,11 @@ import { Database } from '../lib/types'
 
 let url = ''
 
+const databaseUser = process.env.DATABASE_USERNAME
+const databasePassword = decodeURIComponent(process.env.DATABASE_PASSWORD!)
+
 if (__PROD__) {
-  url = `mongodb://${process.env.DATABASE_USERNAME}:${encodeURIComponent(process.env.DATABASE_PASSWORD!)}@localhost:27017/wallstore`
+  url = `mongodb://${databaseUser}:${databasePassword}@localhost:27017/wallstore`
 } else {
   url = 'mongodb://localhost:27017/wallstore'
 }
