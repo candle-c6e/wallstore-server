@@ -1,7 +1,16 @@
 import { MongoClient } from 'mongodb'
+import { __PROD__ } from '../constant'
 import { Database } from '../lib/types'
 
-const url = process.env.DATABASE_URL as string
+let url = ''
+
+if (__PROD__) {
+  url = process.env.DATABASE_url as string
+} else {
+  url = 'mongodb://localhost:27017/wallstore'
+}
+
+console.log(url)
 
 export const connectDatabase = async (): Promise<Database> => {
   try {
