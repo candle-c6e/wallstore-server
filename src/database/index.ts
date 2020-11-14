@@ -5,12 +5,10 @@ import { Database } from '../lib/types'
 let url = ''
 
 if (__PROD__) {
-  url = process.env.DATABASE_url as string
+  url = `mongodb://${process.env.DATABASE_USERNAME}:${encodeURIComponent(process.env.DATABASE_PASSWORD!)}@localhost:27017/wallstore`
 } else {
   url = 'mongodb://localhost:27017/wallstore'
 }
-
-console.log(url)
 
 export const connectDatabase = async (): Promise<Database> => {
   try {
