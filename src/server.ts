@@ -13,7 +13,7 @@ import router from './routes'
 const app: Application = express()
 
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: ['http://localhost:3000', 'http://localhost:5001', "http://jjams.co"],
   credentials: true
 }))
 app.use(helmet())
