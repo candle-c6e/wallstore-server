@@ -293,3 +293,28 @@ export const sortAttributes = async (req: RequestCustom, res: ResponseCustom) =>
     result: []
   })
 }
+
+export const reviewRating = async (req: RequestCustom, res: ResponseCustom) => {
+  const { productId, rating } = req.body
+  const payload = req.payload
+
+  if (!payload) {
+    return res.status(403).json({
+      error: true,
+      msg: 'You are not authorize.',
+      result: []
+    })
+  }
+
+  await req.db?.ratings.updateOne(
+    { userId: new ObjectId(payload.id), productId: new ObjectId(productId) },
+    { $set: { userId: new ObjectId(payload.id), productId: new ObjectId(productId), rating: parseInt(rating) } },
+    { upsert: true }
+  )
+
+  return res.status(200).json({
+    error: false,
+    msg: 'OK.',
+    result: []
+  })
+}

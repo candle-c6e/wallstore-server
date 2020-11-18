@@ -23,7 +23,8 @@ export const connectDatabase = async (): Promise<Database> => {
       products: db.collection('products'),
       carts: db.collection('carts'),
       users: db.collection('users'),
-      orders: db.collection('orders')
+      orders: db.collection('orders'),
+      ratings: db.collection('ratings')
     }
   } catch (err) {
     throw new Error(err)

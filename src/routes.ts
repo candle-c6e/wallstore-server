@@ -8,7 +8,7 @@ import { validate } from './lib/validate'
 import { addToCart, cart, deleteProductCart, updateProductCart } from './modules/cart/cart.controller'
 import { categories, productCategory, createCategory, deleteCategory, editCategory, category, categoriesClient } from './modules/category/category.controller'
 import { createOrder, orderByOrderId, ordersByUserId } from './modules/order/order.controller'
-import { createProduct, deleteImage, deleteProduct, editProduct, featureProducts, product, productBySlug, products, sortAttributes } from './modules/product/product.controller'
+import { createProduct, deleteImage, deleteProduct, editProduct, featureProducts, product, productBySlug, products, reviewRating, sortAttributes } from './modules/product/product.controller'
 import { login, logout, me, register, revokeToken } from './modules/user/user.controller'
 
 const router = Router()
@@ -57,6 +57,7 @@ router
     ],
     validate,
     createProduct)
+  .post('/review-product', isAuth, [body('productId').notEmpty(), body('rating').notEmpty().isInt({ min: 1, max: 5 })], validate, reviewRating)
   .patch('/product', uploadFile.any(), formatFile,
     [
       body('productId').notEmpty().isMongoId(),

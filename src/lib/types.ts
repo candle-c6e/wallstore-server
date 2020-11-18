@@ -26,7 +26,7 @@ export interface Attributes {
 
 interface Product {
   _id: ObjectId
-  categoryId: ObjectId,
+  categoryId: ObjectId
   productName: string
   slug: string
   description: string
@@ -36,6 +36,13 @@ interface Product {
   rating?: number
   createdAt?: Date
   updatedAt?: Date | null
+}
+
+interface Rating {
+  _id: ObjectId
+  productId: ObjectId
+  userId: ObjectId
+  rating: number
 }
 
 interface Order {
@@ -105,4 +112,5 @@ export interface Database {
   carts: Collection<Cart>
   users: Collection<User>
   orders: Collection<Order>
+  ratings: Collection<Rating>
 }

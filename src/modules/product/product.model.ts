@@ -3,6 +3,59 @@ import { ObjectId } from "mongodb"
 export const ProductFeatureModel = () => {
   return [
     {
+      $lookup: {
+        from: "ratings",
+        let: { productId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ["$productId", "$$productId"]
+              }
+            }
+          },
+          {
+            $project: {
+              rating: 1
+            }
+          }
+        ],
+        as: "ratings"
+      }
+    },
+    {
+      $unwind: {
+        path: "$ratings",
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
+      $group: {
+        _id: "$_id",
+        rating: {
+          $avg: "$ratings.rating"
+        },
+        productName: {
+          $first: "$productName"
+        },
+        slug: {
+          $first: "$slug"
+        },
+        attributes: {
+          $first: "$attributes"
+        },
+        price: {
+          $first: "$price"
+        },
+        salePrice: {
+          $first: "$salePrice"
+        },
+        createdAt: {
+          $first: "$createdAt"
+        }
+      }
+    },
+    {
       $project: {
         _id: 1,
         productName: 1,
@@ -10,7 +63,9 @@ export const ProductFeatureModel = () => {
         attributes: 1,
         price: 1,
         salePrice: 1,
-        rating: 1,
+        rating: {
+          $ifNull: ["$rating", 0]
+        },
         createdAt: 1
       },
     },
@@ -107,6 +162,29 @@ export const ProductModel = (slug?: string) => {
     },
     {
       $lookup: {
+        from: "ratings",
+        let: { productId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ["$productId", "$$productId"]
+              }
+            }
+          },
+          {
+            $project: {
+              projectId: 1,
+              userId: 1,
+              rating: 1
+            }
+          }
+        ],
+        as: "ratings"
+      }
+    },
+    {
+      $lookup: {
         from: "categories",
         let: { categoryId: "$categoryId" },
         pipeline: [
@@ -127,6 +205,47 @@ export const ProductModel = (slug?: string) => {
       }
     },
     {
+      $unwind: {
+        path: "$ratings",
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
+      $group: {
+        _id: "$_id",
+        productId: {
+          $first: "$_id"
+        },
+        rating: {
+          $avg: "$ratings.rating"
+        },
+        productName: {
+          $first: "$productName"
+        },
+        category: {
+          $first: "$category"
+        },
+        description: {
+          $first: "$description"
+        },
+        slug: {
+          $first: "$slug"
+        },
+        price: {
+          $first: "$price"
+        },
+        salePrice: {
+          $first: "$salePrice"
+        },
+        attributes: {
+          $first: "$attributes"
+        },
+        createdAt: {
+          $first: "$createdAt"
+        },
+      }
+    },
+    {
       $project: {
         _id: 1,
         productName: 1,
@@ -140,13 +259,12 @@ export const ProductModel = (slug?: string) => {
         slug: 1,
         price: 1,
         salePrice: 1,
-        rating: 1,
+        rating: {
+          $ifNull: ["$rating", 0]
+        },
         attributes: 1,
         createdAt: 1
       }
     },
-    {
-      $limit: 1
-    }
   ]
 }
